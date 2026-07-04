@@ -419,19 +419,21 @@ function MobilePatientCard({ p, meta }: { p: Patient; meta: any }) {
         onTouchEnd={handleTouchEnd}
         onClick={() => { if (Math.abs(swipeOffset) < 10) router.push(`/patient?id=${p.id}`) }}
         style={{ transform: `translateX(${swipeOffset}px)`, transition: touchStart !== null ? 'none' : 'transform 0.2s ease-out' }}
-        className={`relative flex w-full flex-col gap-2 rounded-2xl border p-4 text-left shadow-sm bg-card ${meta.bg}`}
+        className={`relative block w-full rounded-2xl border text-left shadow-sm bg-card`}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-base font-bold text-card-foreground">{p.name}</span>
-            <span className="text-xs text-muted-foreground">{p.age}세</span>
+        <div className={`flex w-full flex-col gap-2 rounded-2xl p-4 ${meta.bg}`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold text-card-foreground">{p.name}</span>
+              <span className="text-xs text-muted-foreground">{p.age}세</span>
+            </div>
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${meta.badge}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+              점수 {p.riskScore}
+            </span>
           </div>
-          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${meta.badge}`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-            점수 {p.riskScore}
-          </span>
+          <p className="text-xs text-muted-foreground line-clamp-2">{p.alertSummary}</p>
         </div>
-        <p className="text-xs text-muted-foreground line-clamp-2">{p.alertSummary}</p>
       </button>
     </div>
   )

@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { ArrowLeft, User, MapPin, Clock, TriangleAlert, Share2, Headphones, StopCircle } from "lucide-react"
+import { ArrowLeft, User, MapPin, Clock, TriangleAlert, Share2, Headphones, StopCircle, Download, Loader2 } from "lucide-react"
 import { usePatients } from "@/components/providers/PatientProvider"
 import { IoTCharts } from "@/components/patient/IoTCharts"
 import { AnomalyAlerts } from "@/components/patient/AnomalyAlerts"
@@ -26,8 +26,45 @@ export function PatientDetailClient({ id }: { id: string }) {
     )
   }
 
-  const handleShareReport = () => {
-    alert("현재 화면의 종합 분석 리포트가 이메일 및 카카오톡으로 상부에 전송되었습니다.")
+  const [isExporting, setIsExporting] = useState(false)
+  const reportRef = useRef<HTMLElement>(null)
+
+  const handleShareReport = async () => {
+    if (!reportRef.current) return
+    
+    setIsExporting(true)
+    try {
+      const html2canvas = (await import("html2canvas")).default
+      const jsPDF = (await import("jspdf")).default
+
+      const element = reportRef.current
+      const canvas = await html2canvas(element, {
+        scale: 2, // High resolution
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff"
+      })
+
+      const imgData = canvas.toDataURL("image/jpeg", 1.0)
+      
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      })
+
+      const pdfWidth = pdf.internal.pageSize.getWidth()
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight)
+      pdf.save(`케어시그널_${patient.name}_리포트.pdf`)
+      
+    } catch (error) {
+      console.error("PDF 생성 실패:", error)
+      alert("PDF 생성 중 오류가 발생했습니다.")
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   // TTS (AI 음성 브리핑) 로직
@@ -76,15 +113,28 @@ export function PatientDetailClient({ id }: { id: string }) {
             대시보드로 돌아가기
           </Link>
           <div className="flex gap-2">
-            <button onClick={handleShareReport} className="flex items-center gap-2 rounded-xl bg-primary/10 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/20 transition">
-              <Share2 className="h-3 w-3" />
-              보고서 요약 및 공유
+            <button 
+              onClick={handleShareReport} 
+              disabled={isExporting}
+              className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2.5 text-sm font-bold text-primary hover:bg-primary/20 transition disabled:opacity-50"
+            >
+              {isExporting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  PDF 생성중...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4" />
+                  보고서 PDF 다운로드
+                </>
+              )}
             </button>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 space-y-8 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+      <main ref={reportRef} className="flex-1 space-y-8 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full bg-background">
         
         {/* 강력한 위험 경고 알림 UI */}
         {patient.riskLevel === "urgent" && (
