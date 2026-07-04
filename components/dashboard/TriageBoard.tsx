@@ -2,9 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Search, ChevronRight, TriangleAlert, Info, Users, Activity, SlidersHorizontal, Plus, Sparkles, X } from "lucide-react"
+import { Search, ChevronRight, TriangleAlert, Info, Users, Activity, SlidersHorizontal, Plus, Sparkles, X, Phone, Check, Map, List } from "lucide-react"
 import { usePatients } from "@/components/providers/PatientProvider"
 import { type RiskLevel, type Patient } from "@/lib/mockData"
+import { RouteMapView } from "@/components/dashboard/RouteMapView"
 
 const riskMeta: Record<RiskLevel, { label: string; badge: string; dot: string; bg: string }> = {
   urgent: {
@@ -37,6 +38,7 @@ export function TriageBoard() {
   const [filterLevel, setFilterLevel] = useState<"all" | RiskLevel>("all")
   const [isAiMode, setIsAiMode] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [viewMode, setViewMode] = useState<"list" | "map">("list")
 
   // New Patient Form State
   const [newPatient, setNewPatient] = useState({
@@ -207,6 +209,22 @@ export function TriageBoard() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* 뷰 모드 토글 (태블릿/PC에서만 맵 뷰 우선권장, 모바일도 가능) */}
+          <div className="flex items-center rounded-xl bg-muted/50 p-1 border border-border">
+            <button
+              onClick={() => setViewMode("list")}
+              className={`rounded-lg px-3 py-1.5 text-sm font-bold transition-all ${viewMode === "list" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <List className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setViewMode("map")}
+              className={`rounded-lg px-3 py-1.5 text-sm font-bold transition-all ${viewMode === "map" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <Map className="h-4 w-4" />
+            </button>
+          </div>
+
           <button
             onClick={() => setIsAiMode(!isAiMode)}
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${
@@ -216,7 +234,8 @@ export function TriageBoard() {
             }`}
           >
             <Sparkles className="h-4 w-4" />
-            AI 추천 정렬
+            <span className="hidden sm:inline">AI 추천 정렬</span>
+            <span className="sm:hidden">AI</span>
           </button>
           
           <button
@@ -224,42 +243,26 @@ export function TriageBoard() {
             className="flex items-center gap-2 rounded-xl bg-card border border-border hover:bg-muted px-4 py-2.5 text-sm font-bold text-card-foreground transition"
           >
             <Plus className="h-4 w-4" />
-            수동 등록
+            <span className="hidden sm:inline">수동 등록</span>
           </button>
         </div>
       </div>
 
-      {/* 모바일 뷰 (카드 리스트) */}
-      <div className="grid gap-3 sm:hidden">
-        {processedPatients.map((p) => {
-          const meta = riskMeta[p.riskLevel]
-          return (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => router.push(`/patient?id=${p.id}`)}
-              className={`flex flex-col gap-2 rounded-2xl border p-4 text-left transition ${meta.bg}`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-base font-bold text-card-foreground">{p.name}</span>
-                  <span className="text-xs text-muted-foreground">{p.age}세</span>
-                </div>
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${meta.badge}`}>
-                  <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-                  점수 {p.riskScore}
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                {p.alertSummary}
-              </p>
-            </button>
-          )
-        })}
-      </div>
+      {/* 맵 뷰 모드 */}
+      {viewMode === "map" ? (
+        <RouteMapView patients={processedPatients} />
+      ) : (
+        <>
+          {/* 모바일 뷰 (카드 리스트) */}
+          <div className="grid gap-3 sm:hidden">
+            {processedPatients.map((p) => {
+              const meta = riskMeta[p.riskLevel]
+              return <MobilePatientCard key={p.id} p={p} meta={meta} />
+            })}
+          </div>
 
-      {/* 데스크톱 뷰 (테이블) */}
-      <div className="hidden overflow-hidden rounded-2xl border border-border bg-card shadow-sm sm:block">
+          {/* 데스크톱 뷰 (테이블) */}
+          <div className="hidden overflow-hidden rounded-2xl border border-border bg-card shadow-sm sm:block">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/30">
@@ -315,6 +318,8 @@ export function TriageBoard() {
           </tbody>
         </table>
       </div>
+      </>
+      )}
 
       {/* 수동 등록 모달 */}
       {showAddModal && (
@@ -370,3 +375,65 @@ export function TriageBoard() {
     </div>
   )
 }
+
+function MobilePatientCard({ p, meta }: { p: Patient; meta: any }) {
+  const router = useRouter()
+  const [swipeOffset, setSwipeOffset] = useState(0)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+
+  const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.touches[0].clientX)
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStart === null) return
+    const diff = e.touches[0].clientX - touchStart
+    setSwipeOffset(Math.max(-120, Math.min(120, diff)))
+  }
+  const handleTouchEnd = () => {
+    if (swipeOffset > 80) {
+      alert(`${p.name} 어르신 보호자에게 전화를 연결합니다. (모의)`)
+    } else if (swipeOffset < -80) {
+      alert(`${p.name} 어르신 현장 방문 완료 처리 되었습니다. (모의)`)
+    }
+    setSwipeOffset(0)
+    setTouchStart(null)
+  }
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-border bg-muted/30">
+      {/* Background Actions */}
+      <div className="absolute inset-0 flex items-center justify-between px-5">
+        <div className="flex items-center gap-2 font-bold text-success">
+          <Phone className="h-5 w-5" />
+          <span>전화걸기</span>
+        </div>
+        <div className="flex items-center gap-2 font-bold text-primary">
+          <span>방문완료</span>
+          <Check className="h-5 w-5" />
+        </div>
+      </div>
+      
+      {/* Foreground Card */}
+      <button
+        type="button"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onClick={() => { if (Math.abs(swipeOffset) < 10) router.push(`/patient?id=${p.id}`) }}
+        style={{ transform: `translateX(${swipeOffset}px)`, transition: touchStart !== null ? 'none' : 'transform 0.2s ease-out' }}
+        className={`relative flex w-full flex-col gap-2 rounded-2xl border p-4 text-left shadow-sm bg-card ${meta.bg}`}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-base font-bold text-card-foreground">{p.name}</span>
+            <span className="text-xs text-muted-foreground">{p.age}세</span>
+          </div>
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${meta.badge}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+            점수 {p.riskScore}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground line-clamp-2">{p.alertSummary}</p>
+      </button>
+    </div>
+  )
+}
+

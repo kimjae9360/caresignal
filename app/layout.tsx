@@ -11,9 +11,14 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: '케어시그널 (CareSignal) — AI 돌봄 어시스턴트',
-  description:
-    '음성과 데이터로 어르신의 안전을 가장 먼저 캐치합니다. 사회복지사를 위한 AI 기반 돌봄 트리아지 플랫폼.',
+  title: 'CareSignal - AI 돌봄 모니터링',
+  description: '어르신의 안전을 가장 먼저 캐치하는 AI 돌봄 어시스턴트',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'CareSignal',
+  },
   generator: 'v0.app',
   icons: {
     icon: [

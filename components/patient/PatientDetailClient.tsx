@@ -1,8 +1,8 @@
 "use client"
 
-import React from "react"
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, User, MapPin, Clock, TriangleAlert, Share2 } from "lucide-react"
+import { ArrowLeft, User, MapPin, Clock, TriangleAlert, Share2, Headphones, StopCircle } from "lucide-react"
 import { usePatients } from "@/components/providers/PatientProvider"
 import { IoTCharts } from "@/components/patient/IoTCharts"
 import { AnomalyAlerts } from "@/components/patient/AnomalyAlerts"
@@ -28,6 +28,39 @@ export function PatientDetailClient({ id }: { id: string }) {
 
   const handleShareReport = () => {
     alert("현재 화면의 종합 분석 리포트가 이메일 및 카카오톡으로 상부에 전송되었습니다.")
+  }
+
+  // TTS (AI 음성 브리핑) 로직
+  const [isPlaying, setIsPlaying] = useState(false)
+
+  useEffect(() => {
+    return () => {
+      // 컴포넌트 언마운트 시 음성 멈춤
+      window.speechSynthesis.cancel()
+    }
+  }, [])
+
+  const toggleTTS = () => {
+    if (isPlaying) {
+      window.speechSynthesis.cancel()
+      setIsPlaying(false)
+      return
+    }
+
+    const textToSpeak = `
+      현재 ${patient.name} 어르신의 브리핑입니다.
+      위험도는 ${patient.riskLevel === 'urgent' ? '긴급' : patient.riskLevel === 'attention' ? '주의' : '안정'} 단계이며, 점수는 ${patient.riskScore}점입니다.
+      최근 분석 요약: ${patient.alertSummary}.
+      ${patient.medications.filter(m => m.isNew).length > 0 ? "최근 신규 추가된 약물이 있습니다. 복약 지도를 확인해주세요." : ""}
+      안전한 현장 방문 되시길 바랍니다.
+    `
+    const utterance = new SpeechSynthesisUtterance(textToSpeak)
+    utterance.lang = "ko-KR"
+    utterance.rate = 1.1 // 조금 빠른 속도
+    utterance.onend = () => setIsPlaying(false)
+    
+    window.speechSynthesis.speak(utterance)
+    setIsPlaying(true)
   }
 
   return (
@@ -191,6 +224,18 @@ export function PatientDetailClient({ id }: { id: string }) {
           </div>
         </section>
       </main>
+
+      {/* AI 음성 브리핑 플로팅 버튼 (모바일/태블릿 친화적) */}
+      <button
+        onClick={toggleTTS}
+        className={`fixed bottom-24 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-2xl ring-4 transition-transform hover:scale-105 sm:bottom-8 sm:right-8 ${
+          isPlaying 
+            ? "bg-destructive text-destructive-foreground ring-destructive/30 animate-pulse" 
+            : "bg-primary text-primary-foreground ring-primary/30"
+        }`}
+      >
+        {isPlaying ? <StopCircle className="h-6 w-6" /> : <Headphones className="h-6 w-6" />}
+      </button>
     </div>
   )
 }
