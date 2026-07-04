@@ -1,0 +1,96 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+#
+# Initial commit
+#
+# Changes to be committed:
+#	new file:   .gitignore
+#	new file:   analysis_results.md
+#	new file:   app/globals.css
+#	new file:   app/layout.tsx
+#	new file:   app/page.tsx
+#	new file:   caresignal_system_analysis.pdf
+#	new file:   components.json
+#	new file:   components/analysis-section.tsx
+#	new file:   components/app-sidebar.tsx
+#	new file:   components/auth-screen.tsx
+#	new file:   components/dashboard.tsx
+#	new file:   components/patient-detail.tsx
+#	new file:   components/ui/button.tsx
+#	new file:   git_auto_uploader.bat
+#	new file:   lib/ai.ts
+#	new file:   lib/data.ts
+#	new file:   lib/supabase.ts
+#	new file:   lib/utils.ts
+#	new file:   next-env.d.ts
+#	new file:   next.config.mjs
+#	new file:   out/404.html
+#	new file:   out/__next.__PAGE__.txt
+#	new file:   out/__next._full.txt
+#	new file:   out/__next._head.txt
+#	new file:   out/__next._index.txt
+#	new file:   out/__next._tree.txt
+#	new file:   out/_next/static/awQtPg1FgelsZyp7UZN6V/_buildManifest.js
+#	new file:   out/_next/static/awQtPg1FgelsZyp7UZN6V/_clientMiddlewareManifest.js
+#	new file:   out/_next/static/awQtPg1FgelsZyp7UZN6V/_ssgManifest.js
+#	new file:   out/_next/static/chunks/02i7dfk78~t~2.js
+#	new file:   out/_next/static/chunks/03~yq9q893hmn.js
+#	new file:   out/_next/static/chunks/07lhk_q6pmm3r.js
+#	new file:   out/_next/static/chunks/0b5yd18v4zlw1.js
+#	new file:   out/_next/static/chunks/0dbhjjzl8qfwv.js
+#	new file:   out/_next/static/chunks/0e-3wo03y2.ql.js
+#	new file:   out/_next/static/chunks/0qauw10jev6~5.js
+#	new file:   out/_next/static/chunks/0u.5-1~e_d~5t.css
+#	new file:   out/_next/static/chunks/0v90e52bsza-c.js
+#	new file:   out/_next/static/chunks/turbopack-149g5o6gjimbl.js
+#	new file:   out/_next/static/media/4fa387ec64143e14-s.0wkzw~je483f-.woff2
+#	new file:   out/_next/static/media/53b9e256198e5412-s.0-wfv7uh4i7h9.woff2
+#	new file:   out/_next/static/media/5ce348bf30bf5439-s.0zgw-jeven.3w.woff2
+#	new file:   out/_next/static/media/6306c77e7c8268e4-s.0rhz0arwfsn~5.woff2
+#	new file:   out/_next/static/media/7178b3e590c64307-s.0nx0ww8fni_q3.woff2
+#	new file:   out/_next/static/media/797e433ab948586e-s.p.08e28id.o-okb.woff2
+#	new file:   out/_next/static/media/7d817b4c03b0c5f1-s.0l76wvqk9d84w.woff2
+#	new file:   out/_next/static/media/8a480f0b521d4e75-s.0jzbimsg8vl84.woff2
+#	new file:   out/_next/static/media/bbc41e54d2fcbd21-s.0k4k9394f2q-k.woff2
+#	new file:   out/_next/static/media/caa3a2e1cccd8315-s.p.09~u27dqhyhd6.woff2
+#	new file:   out/_next/static/media/fef07dbb0973bf53-s.12tyk43_3sh9u.woff2
+#	new file:   out/_not-found.html
+#	new file:   out/_not-found.txt
+#	new file:   out/_not-found/__next._full.txt
+#	new file:   out/_not-found/__next._head.txt
+#	new file:   out/_not-found/__next._index.txt
+#	new file:   out/_not-found/__next._not-found.txt
+#	new file:   out/_not-found/__next._not-found/__PAGE__.txt
+#	new file:   out/_not-found/__next._tree.txt
+#	new file:   out/apple-icon.png
+#	new file:   out/icon-dark-32x32.png
+#	new file:   out/icon-light-32x32.png
+#	new file:   out/icon.svg
+#	new file:   out/index.html
+#	new file:   out/index.txt
+#	new file:   out/placeholder-logo.png
+#	new file:   out/placeholder-logo.svg
+#	new file:   out/placeholder-user.jpg
+#	new file:   out/placeholder.jpg
+#	new file:   out/placeholder.svg
+#	new file:   package-lock.json
+#	new file:   package.json
+#	new file:   pnpm-lock.yaml
+#	new file:   postcss.config.mjs
+#	new file:   public/apple-icon.png
+#	new file:   public/icon-dark-32x32.png
+#	new file:   public/icon-light-32x32.png
+#	new file:   public/icon.svg
+#	new file:   public/placeholder-logo.png
+#	new file:   public/placeholder-logo.svg
+#	new file:   public/placeholder-user.jpg
+#	new file:   public/placeholder.jpg
+#	new file:   public/placeholder.svg
+#	new file:   run.bat
+#	new file:   scripts/generate_pdf.js
+#	new file:   system_proposals.md
+#	new file:   tsconfig.json
+#

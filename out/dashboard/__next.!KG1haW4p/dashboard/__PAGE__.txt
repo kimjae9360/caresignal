@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[53216,["/_next/static/chunks/0s2-1v~2awerq.js","/_next/static/chunks/0n4z.7yu76je-.js","/_next/static/chunks/09h7_0_-~yzv8.js","/_next/static/chunks/16wdxkbr9y9bf.js"],"TriageBoard"]
+3:I[97367,["/_next/static/chunks/0s2-1v~2awerq.js","/_next/static/chunks/0n4z.7yu76je-.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"flex flex-col h-full bg-background p-4 sm:p-6 lg:p-8","children":[["$","header",null,{"className":"mb-8","children":[["$","p",null,{"className":"text-sm font-medium text-muted-foreground","children":"2026년 7월 4일 토요일"}],["$","h1",null,{"className":"mt-1 text-2xl font-bold tracking-tight text-card-foreground","children":"김재원 복지사님, 오늘 가장 먼저 확인해야 할 대상자입니다."}],["$","p",null,{"className":"mt-2 text-sm text-muted-foreground","children":"AI 분석 및 센서 기반 위험도 점수에 따라 우선 관리 대상자가 자동 정렬되었습니다."}]]}],["$","main",null,{"className":"flex-1","children":["$","$L2",null,{}]}]]}],[["$","script","script-0",{"src":"/_next/static/chunks/16wdxkbr9y9bf.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"_LgfG6l9RkGRlkTRSE-qq"}
+5:null
