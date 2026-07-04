@@ -34,18 +34,17 @@ export function PatientDetailClient({ id }: { id: string }) {
     
     setIsExporting(true)
     try {
-      const html2canvas = (await import("html2canvas")).default
+      const { toPng } = await import("html-to-image")
       const jsPDF = (await import("jspdf")).default
 
       const element = reportRef.current
-      const canvas = await html2canvas(element, {
-        scale: 2, // High resolution
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff"
+      
+      // html-to-image를 사용하여 렌더링 에러(lab color 등) 방지
+      const imgData = await toPng(element, {
+        quality: 1.0,
+        backgroundColor: "#ffffff",
+        pixelRatio: 2
       })
-
-      const imgData = canvas.toDataURL("image/jpeg", 1.0)
       
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -53,10 +52,12 @@ export function PatientDetailClient({ id }: { id: string }) {
         format: "a4"
       })
 
+      const elementWidth = element.offsetWidth
+      const elementHeight = element.offsetHeight
       const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+      const pdfHeight = (elementHeight * pdfWidth) / elementWidth
 
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight)
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight)
       pdf.save(`케어시그널_${patient.name}_리포트.pdf`)
       
     } catch (error) {
